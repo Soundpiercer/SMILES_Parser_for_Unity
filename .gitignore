@@ -1,0 +1,15 @@
+*.sln
+*.csproj
+*.lock
+*.userprefs
+*.ide
+*.ide-wal
+*.ide-shm
+.vs
+.vsconfig
+
+/SMILES_Parser_for_Unity/Logs/
+/SMILES_Parser_for_Unity/Library/
+/SMILES_Parser_for_Unity/Temp/
+/SMILES_Parser_for_Unity/obj/
+/SMILES_Parser_for_Unity/bin/
