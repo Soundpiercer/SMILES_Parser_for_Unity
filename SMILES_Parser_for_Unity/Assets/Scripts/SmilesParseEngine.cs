@@ -1,6 +1,8 @@
 using System;
+using System.IO;
 using System.Collections;
 using System.Collections.Generic;
+using System.Text.RegularExpressions;
 using UnityEngine;
 
 public enum Atom
@@ -11,10 +13,10 @@ public enum Atom
     N = 7,
     O = 8,
     F = 9,
-    Na = 11,
-    Cl = 17,
+    //Na = 11,
+    //Cl = 17,
     K = 19,
-    Ca = 20,
+    //Ca = 20,
 }
 
 public class SmilesObject
@@ -133,15 +135,42 @@ public class Graph<T>
 
 public class SmilesParseEngine : MonoBehaviour
 {
-    // Start is called before the first frame update
-    void Start()
+    private List<string> smiles = new List<string>();
+    private List<Graph<SmilesObject>> molecules = new List<Graph<SmilesObject>>();
+
+    private void Start()
     {
-        
+        ReadText();
+        Parse();
     }
 
-    // Update is called once per frame
-    void Update()
+    private void ReadText()
     {
-        
+        TextAsset textAsset = Resources.Load<TextAsset>("40smiles");
+
+        using (StringReader sr = new StringReader(textAsset.text))
+        {
+            while (sr.Peek() >= 0)
+            {
+                smiles.Add(sr.ReadLine());
+            }
+        }
+
+        //foreach (string s in smiles)
+        //{
+        //    Debug.Log(s);
+        //}
+    }
+
+    private void Parse()
+    {
+        Graph<SmilesObject> molecule = new Graph<SmilesObject>();
+        string s = smiles[0];
+
+        for (int i = 0; i < s.Length; i++)
+        {
+            SmilesObject atom = new SmilesObject(s[i].ToString());
+            molecule.AddNode(atom);
+        }
     }
 }
