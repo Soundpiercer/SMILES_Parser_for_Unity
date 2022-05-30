@@ -85,6 +85,23 @@ public class Node<T>
     }
 }
 
+public struct Ring
+{
+    public int id;
+
+    public int startAddress;
+    public int endAddress;
+    public int Length
+    {
+        get { return endAddress - startAddress + 1; }
+    }
+
+    public bool IsValid
+    {
+        get { return endAddress != 0 && Length > 2; }
+    }
+}
+
 // Graph 클래스
 public class Graph<T>
 {
@@ -141,7 +158,7 @@ public class SmilesParseEngine : MonoBehaviour
     private void Start()
     {
         ReadText();
-        Parse();
+        Parse(0);
     }
 
     private void ReadText()
@@ -155,15 +172,60 @@ public class SmilesParseEngine : MonoBehaviour
                 smiles.Add(sr.ReadLine());
             }
         }
-
-        //foreach (string s in smiles)
-        //{
-        //    Debug.Log(s);
-        //}
     }
 
-    private void Parse()
+    private void Parse(int idx)
     {
+        string source = smiles[idx];
+        Debug.Log(source);
+
+        Dictionary<int, Ring> rings = new Dictionary<int, Ring>();
+        int j = 0;
+        for (int i = 0; i < source.Length; i++)
+        {
+            char c = source[i];
+            if (Regex.IsMatch(c.ToString(), @"[\d-]"))
+            {
+                int id = int.Parse(c.ToString());
+                if (!rings.ContainsKey(id))
+                {
+                    j -= 1;
+
+                    Ring ring = new Ring();
+                    rings.Add(id, ring);
+
+                    ring.id = id;
+                    ring.startAddress = j; // - rings.Count;
+                    rings[id] = ring;
+                }
+                else
+                {
+                    if (!rings[id].IsValid)
+                    {
+                        j -= 1;
+
+                        Ring ring = rings[id];
+                        ring.endAddress = j; // - rings.Count;
+                        rings[id] = ring;
+                    }
+                }
+            }
+
+            j++;
+        }
+
+        foreach (KeyValuePair<int, Ring> pair in rings)
+        {
+            Debug.Log(pair.Value.startAddress);
+            Debug.Log(pair.Value.endAddress);
+            Debug.Log(pair.Value.Length);
+            Debug.Log(pair.Value.IsValid);
+        }    
+
+        string molecules = Regex.Replace(source, @"[\d-]", string.Empty);
+        Debug.Log(molecules);
+
+        /*
         Graph<SmilesObject> molecule = new Graph<SmilesObject>();
         string s = smiles[0];
 
@@ -172,5 +234,6 @@ public class SmilesParseEngine : MonoBehaviour
             SmilesObject atom = new SmilesObject(s[i].ToString());
             molecule.AddNode(atom);
         }
+        */
     }
 }
