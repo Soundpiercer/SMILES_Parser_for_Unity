@@ -8,6 +8,8 @@ using UnityEngine;
 
 public class SmilesParseEngine : MonoBehaviour
 {
+    public GameObject smilesObjectPrefab;
+
     private List<string> smiles = new List<string>();
     private List<Graph<SmilesObject>> graphs = new List<Graph<SmilesObject>>();
     private Graph<SmilesObject> graph
@@ -91,9 +93,9 @@ public class SmilesParseEngine : MonoBehaviour
 
 
         // ★ Step 2. Build Graph
-        foreach (char c in molecules)
+        for (int i = 0; i < molecules.Length; i++)
         {
-            graph.AddNode(new SmilesObject(c));
+            graph.AddNode(new SmilesObject(molecules[i], i));
         }
 
         for (int i = 0; i < graph.NodesCount - 1; i++)
@@ -106,13 +108,42 @@ public class SmilesParseEngine : MonoBehaviour
             }
         }
 
-        graph.DebugPrintLinks();
+        // ★ Step 3. Build Structure
+        DepthFirstSearch();
+    }
+
+    private void DepthFirstSearch()
+    {
+        Node<SmilesObject> root = graph.GetNode(0);
+        Stack<Node<SmilesObject>> stack = new Stack<Node<SmilesObject>>();
+        stack.Push(root);
+        GameObject rootObject = Instantiate(smilesObjectPrefab);
+
+        root.marked = true;
+
+        while (stack.Count > 0)
+        {
+            Node<SmilesObject> node = stack.Pop();
+            for (int i = 0; i < node.Neighbors.Count; i++)
+            {
+                var neighbor = node.Neighbors[i];
+                if (neighbor.marked == false)
+                {
+                    neighbor.marked = true;
+                    stack.Push(neighbor);
+                    Instantiate(smilesObjectPrefab, rootObject.transform.position + (Vector3.right * neighbor.Data.id), Quaternion.identity);
+                }
+
+                Debug.Log(node.Data.id + ", " + neighbor.Data.id);
+            }
+        }
     }
 
     private bool IsRingEnd(int index, Dictionary<int, Ring> rings)
     {
-        Ring ring = rings.First(i => i.Value.endAddress == index).Value;
-        if (ring != null)
+        KeyValuePair<int, Ring> pair = rings.FirstOrDefault(i => i.Value.endAddress == index);
+
+        if (pair.Value != null)
         {
             return true;
         }

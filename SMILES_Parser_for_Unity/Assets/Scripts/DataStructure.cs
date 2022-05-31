@@ -9,6 +9,7 @@ public class Node<T>
     private List<float> weights;
 
     public T Data { get; set; }
+    public bool marked { get; set; }
 
     public Node()
     {
@@ -116,38 +117,44 @@ public enum Atom
 public class SmilesObject
 {
     public Atom atom;
+    public int id;
 
     public SmilesObject()
     {
         atom = Atom.Default;
+        id = 0;
     }
 
-    public SmilesObject(Atom atom)
+    public SmilesObject(Atom atom, int id = 0)
     {
         this.atom = atom;
+        this.id = id;
     }
 
-    public SmilesObject(char value)
+    public SmilesObject(char value, int id = 0)
     {
         if (Enum.TryParse(value.ToString(), out Atom result))
         {
             atom = result;
+            this.id = id;
         }
     }
 
-    public SmilesObject(string value)
+    public SmilesObject(string value, int id = 0)
     {
         if (Enum.TryParse(value, out Atom result))
         {
             atom = result;
+            this.id = id;
         }
     }
 
-    public SmilesObject(int value)
+    public SmilesObject(int value, int id = 0)
     {
         if (Enum.TryParse(value.ToString(), out Atom result))
         {
             atom = result;
+            this.id = id;
         }
     }
 }
