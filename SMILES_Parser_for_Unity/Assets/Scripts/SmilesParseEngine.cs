@@ -3,12 +3,17 @@ using System.IO;
 using System.Collections;
 using System.Collections.Generic;
 using System.Text.RegularExpressions;
+using System.Linq;
 using UnityEngine;
 
 public class SmilesParseEngine : MonoBehaviour
 {
     private List<string> smiles = new List<string>();
-    private List<Graph<SmilesObject>> molecules = new List<Graph<SmilesObject>>();
+    private List<Graph<SmilesObject>> graphs = new List<Graph<SmilesObject>>();
+    private Graph<SmilesObject> graph
+    {
+        get { return graphs.Count == 0 ? null : graphs[0]; }
+    }
 
     private void Start()
     {
@@ -32,9 +37,10 @@ public class SmilesParseEngine : MonoBehaviour
     private void Parse(int idx)
     {
         string source = smiles[idx];
+        graphs.Add(new Graph<SmilesObject>());
         Debug.Log(source);
 
-        // Detect Rings and separate it from smiles string
+        // ★ Step 1. Detect Rings and separate it from smiles string
         Dictionary<int, Ring> rings = new Dictionary<int, Ring>();
         int j = 0;
         for (int i = 0; i < source.Length; i++)
@@ -70,26 +76,55 @@ public class SmilesParseEngine : MonoBehaviour
             j++;
         }
 
+        /*
         foreach (KeyValuePair<int, Ring> pair in rings)
         {
             Debug.Log(pair.Value.startAddress);
             Debug.Log(pair.Value.endAddress);
             Debug.Log(pair.Value.Length);
             Debug.Log(pair.Value.IsValid);
-        }    
-
-        string molecules = Regex.Replace(source, @"[\d-]", string.Empty);
-        Debug.Log(molecules);
-
-        /*
-        Graph<SmilesObject> molecule = new Graph<SmilesObject>();
-        string s = smiles[0];
-
-        for (int i = 0; i < s.Length; i++)
-        {
-            SmilesObject atom = new SmilesObject(s[i].ToString());
-            molecule.AddNode(atom);
         }
         */
+
+        string molecules = Regex.Replace(source, @"[\d-]", string.Empty);
+        // Debug.Log(molecules);
+
+
+        // ★ Step 2. Build Graph
+        foreach (char c in molecules)
+        {
+            graph.AddNode(new SmilesObject(c));
+        }
+
+        for (int i = 0; i < graph.NodesCount - 1; i++)
+        {
+            graph.AddEdge(i, i + 1, 1);
+
+            if (IsRingEnd(i, rings))
+            {
+                graph.AddEdge(i, GetRing(i, rings).startAddress, 1);
+            }
+        }
+
+        graph.DebugPrintLinks();
+    }
+
+    private bool IsRingEnd(int index, Dictionary<int, Ring> rings)
+    {
+        Ring ring = rings.First(i => i.Value.endAddress == index).Value;
+        if (ring != null)
+        {
+            return true;
+        }
+        else
+        {
+            return false;
+        }
+    }
+
+    private Ring GetRing(int index, Dictionary<int, Ring> rings)
+    {
+        Ring ring = rings.First(i => i.Value.endAddress == index).Value;
+        return ring;
     }
 }

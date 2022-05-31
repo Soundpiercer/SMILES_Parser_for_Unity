@@ -1,7 +1,7 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-
 
 public class Node<T>
 {
@@ -41,6 +41,10 @@ public class Node<T>
 public class Graph<T>
 {
     private List<Node<T>> nodeList;
+    public int NodesCount
+    {
+        get { return nodeList.Count; }
+    }
 
     public Graph()
     {
@@ -60,6 +64,16 @@ public class Graph<T>
         return node;
     }
 
+    public Node<T> GetNode(int index)
+    {
+        return nodeList[index];
+    }
+
+    public void AddEdge(int fromIndex, int toIndex, float weight = 0, bool oneway = true)
+    {
+        AddEdge(nodeList[fromIndex], nodeList[toIndex], weight, oneway);
+    }
+
     public void AddEdge(Node<T> from, Node<T> to, float weight = 0, bool oneway = true)
     {
         from.Neighbors.Add(to);
@@ -70,7 +84,7 @@ public class Graph<T>
             to.Neighbors.Add(from);
             to.Weights.Add(weight);
         }
-    }
+    } 
 
     public void DebugPrintLinks()
     {
@@ -113,6 +127,14 @@ public class SmilesObject
         this.atom = atom;
     }
 
+    public SmilesObject(char value)
+    {
+        if (Enum.TryParse(value.ToString(), out Atom result))
+        {
+            atom = result;
+        }
+    }
+
     public SmilesObject(string value)
     {
         if (Enum.TryParse(value, out Atom result))
@@ -130,7 +152,7 @@ public class SmilesObject
     }
 }
 
-public struct Ring
+public class Ring
 {
     public int id;
 
