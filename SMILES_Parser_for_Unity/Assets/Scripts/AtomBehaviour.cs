@@ -18,5 +18,19 @@ public class AtomBehaviour : MonoBehaviour
         this.buildorder = buildorder;
 
         gameObject.name = "atom" + ID;
+
+        // set element color
+        MeshRenderer renderer = gameObject.GetComponent<MeshRenderer>();
+        switch (atom.element)
+        {
+            case Element.O:
+                renderer.material.color = Color.yellow;
+                break;
+            case Element.N:
+                renderer.material.color = Color.green;
+                break;
+            default:
+                break;
+        }
     }
 }
