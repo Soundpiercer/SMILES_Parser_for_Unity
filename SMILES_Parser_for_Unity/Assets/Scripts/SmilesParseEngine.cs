@@ -10,6 +10,7 @@ public class SmilesParseEngine : MonoBehaviour
 {
     public GameObject smilesObjectPrefab;
     public GameObject smilesEdgePrefab;
+    public Transform smilesObjectRoot;
 
     private List<string> smiles = new List<string>();
     private List<Graph<Atom>> graphs = new List<Graph<Atom>>();
@@ -140,6 +141,17 @@ public class SmilesParseEngine : MonoBehaviour
 
         // Create Edges
         CreateEdges(Graph, atoms);
+
+        // Relocate SMILES GameObject Root
+        Vector3 position = Vector3.zero;
+        int childCount = 0;
+        foreach (Transform t in smilesObjectRoot)
+        {
+            position += t.transform.position;
+            childCount++;
+        }
+
+        smilesObjectRoot.position = -position / childCount;
     }
 
     #region Step 3
@@ -155,7 +167,7 @@ public class SmilesParseEngine : MonoBehaviour
         Node<Atom> rootNode = graph.GetNode(0);      
         stack.Push(rootNode);
         
-        AtomBehaviour root = Instantiate(smilesObjectPrefab)
+        AtomBehaviour root = Instantiate(smilesObjectPrefab, smilesObjectRoot)
             .AddComponent<AtomBehaviour>();
         root.Init(rootNode.Data, buildorder);
         result.Add(root);
@@ -175,7 +187,7 @@ public class SmilesParseEngine : MonoBehaviour
                     neighbor.marked = true;
                     stack.Push(neighbor);
 
-                    AtomBehaviour neighborObject = Instantiate(smilesObjectPrefab, previous.transform.position + (Vector3.right * 2), Quaternion.identity)
+                    AtomBehaviour neighborObject = Instantiate(smilesObjectPrefab, previous.transform.position + (Vector3.right * 2), Quaternion.identity, smilesObjectRoot)
                         .AddComponent<AtomBehaviour>();
                     neighborObject.Init(neighbor.Data, ++buildorder);
                     result.Add(neighborObject);
@@ -237,7 +249,7 @@ public class SmilesParseEngine : MonoBehaviour
                 {
                     AtomBehaviour to = atoms.Find(a => a.ID == node.Data.id);
 
-                    EdgeBehaviour edgeObject = Instantiate(smilesEdgePrefab)
+                    EdgeBehaviour edgeObject = Instantiate(smilesEdgePrefab, smilesObjectRoot)
                         .AddComponent<EdgeBehaviour>();
                     edgeObject.Init(from, to);
                 }

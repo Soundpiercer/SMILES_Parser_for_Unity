@@ -21,8 +21,6 @@ public class EdgeBehaviour : MonoBehaviour
         // gameObject.transform.rotation = Quaternion.Euler(0, 0, 90f); default rotation
 
         float angle = Vector3.SignedAngle(to.transform.position - from.transform.position, Vector3.right, -Vector3.forward);
-        Debug.Log(angle);
-
         gameObject.transform.rotation = Quaternion.Euler(0, 0, 90f + angle);
     }
 }
