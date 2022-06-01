@@ -11,8 +11,8 @@ public class SmilesParseEngine : MonoBehaviour
     public GameObject smilesObjectPrefab;
 
     private List<string> smiles = new List<string>();
-    private List<Graph<SmilesObject>> graphs = new List<Graph<SmilesObject>>();
-    private Graph<SmilesObject> graph
+    private List<Graph<Atom>> graphs = new List<Graph<Atom>>();
+    private Graph<Atom> Graph
     {
         get { return graphs.Count == 0 ? null : graphs[0]; }
     }
@@ -39,7 +39,7 @@ public class SmilesParseEngine : MonoBehaviour
     private void Parse(int idx)
     {
         string source = smiles[idx];
-        graphs.Add(new Graph<SmilesObject>());
+        graphs.Add(new Graph<Atom>());
         Debug.Log(source);
 
         // ★ Step 1. Detect Rings and separate it from smiles string
@@ -95,35 +95,47 @@ public class SmilesParseEngine : MonoBehaviour
         // ★ Step 2. Build Graph
         for (int i = 0; i < molecules.Length; i++)
         {
-            graph.AddNode(new SmilesObject(molecules[i], i));
+            Graph.AddNode(new Atom(molecules[i], i));
         }
 
-        for (int i = 0; i < graph.NodesCount - 1; i++)
+        for (int i = 0; i < Graph.NodesCount - 1; i++)
         {
-            graph.AddEdge(i, i + 1, 1);
+            Graph.AddEdge(i, i + 1, 1);
 
             if (IsRingEnd(i, rings))
             {
-                graph.AddEdge(i, GetRing(i, rings).startAddress, 1);
+                Graph.AddEdge(i, GetRing(i, rings).startAddress, 1);
             }
         }
 
         // ★ Step 3. Build Structure
-        DepthFirstSearch();
+        List<AtomBehaviour> buildorder = DepthFirstSearchInstantiate(Graph);
+        Ringify(buildorder);
     }
 
-    private void DepthFirstSearch()
+    private List<AtomBehaviour> DepthFirstSearchInstantiate(Graph<Atom> graph)
     {
-        Node<SmilesObject> root = graph.GetNode(0);
-        Stack<Node<SmilesObject>> stack = new Stack<Node<SmilesObject>>();
-        stack.Push(root);
-        GameObject rootObject = Instantiate(smilesObjectPrefab);
+        List<AtomBehaviour> result = new List<AtomBehaviour>();
 
-        root.marked = true;
+        Stack<Node<Atom>> stack = new Stack<Node<Atom>>();
+        AtomBehaviour previous;
 
+        // Init Root
+        Node<Atom> rootNode = graph.GetNode(0);      
+        stack.Push(rootNode);
+        
+        AtomBehaviour root = Instantiate(smilesObjectPrefab)
+            .AddComponent<AtomBehaviour>();
+        root.Init(rootNode.Data);
+        result.Add(root);
+        previous = root;
+
+        rootNode.marked = true;
+
+        // DFS
         while (stack.Count > 0)
         {
-            Node<SmilesObject> node = stack.Pop();
+            Node<Atom> node = stack.Pop();
             for (int i = 0; i < node.Neighbors.Count; i++)
             {
                 var neighbor = node.Neighbors[i];
@@ -131,11 +143,26 @@ public class SmilesParseEngine : MonoBehaviour
                 {
                     neighbor.marked = true;
                     stack.Push(neighbor);
-                    Instantiate(smilesObjectPrefab, rootObject.transform.position + (Vector3.right * neighbor.Data.id), Quaternion.identity);
+
+                    AtomBehaviour neighborObject = Instantiate(smilesObjectPrefab, previous.transform.position + (Vector3.right * 2), Quaternion.identity)
+                        .AddComponent<AtomBehaviour>();
+                    neighborObject.Init(neighbor.Data);
+                    result.Add(neighborObject);
+                    previous = neighborObject;
                 }
 
-                Debug.Log(node.Data.id + ", " + neighbor.Data.id);
+                //Debug.Log(node.Data.id + ", " + neighbor.Data.id);
             }
+        }
+
+        return result;
+    }
+
+    private void Ringify(List<AtomBehaviour> buildorder)
+    {
+        foreach (AtomBehaviour atom in buildorder)
+        {
+
         }
     }
 

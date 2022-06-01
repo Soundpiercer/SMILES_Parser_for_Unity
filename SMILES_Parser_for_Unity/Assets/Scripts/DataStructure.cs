@@ -100,7 +100,7 @@ public class Graph<T>
     }
 }
 
-public enum Atom
+public enum Element
 {
     Default = 0,
     H = 1,
@@ -114,46 +114,46 @@ public enum Atom
     //Ca = 20,
 }
 
-public class SmilesObject
+public class Atom
 {
-    public Atom atom;
+    public Element element;
     public int id;
 
-    public SmilesObject()
+    public Atom()
     {
-        atom = Atom.Default;
+        element = Element.Default;
         id = 0;
     }
 
-    public SmilesObject(Atom atom, int id = 0)
+    public Atom(Element element, int id = 0)
     {
-        this.atom = atom;
+        this.element = element;
         this.id = id;
     }
 
-    public SmilesObject(char value, int id = 0)
+    public Atom(char value, int id = 0)
     {
-        if (Enum.TryParse(value.ToString(), out Atom result))
+        if (Enum.TryParse(value.ToString(), out Element result))
         {
-            atom = result;
+            element = result;
             this.id = id;
         }
     }
 
-    public SmilesObject(string value, int id = 0)
+    public Atom(string value, int id = 0)
     {
-        if (Enum.TryParse(value, out Atom result))
+        if (Enum.TryParse(value, out Element result))
         {
-            atom = result;
+            element = result;
             this.id = id;
         }
     }
 
-    public SmilesObject(int value, int id = 0)
+    public Atom(int value, int id = 0)
     {
-        if (Enum.TryParse(value.ToString(), out Atom result))
+        if (Enum.TryParse(value.ToString(), out Element result))
         {
-            atom = result;
+            element = result;
             this.id = id;
         }
     }
