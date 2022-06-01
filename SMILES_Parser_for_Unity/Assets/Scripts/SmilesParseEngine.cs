@@ -81,9 +81,10 @@ public class SmilesParseEngine : MonoBehaviour
             Graph.AddNode(new Atom(molecules[i], i));
         }
 
-        for (int i = 0; i < Graph.NodesCount - 1; i++)
+        for (int i = 0; i < Graph.NodesCount; i++)
         {
-            Graph.AddEdge(i, i + 1, 1);
+            if (i != Graph.NodesCount - 1)
+                Graph.AddEdge(i, i + 1, 1);
 
             if (IsRingEnd(i, rings))
             {
