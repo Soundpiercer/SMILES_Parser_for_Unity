@@ -7,6 +7,10 @@ using UnityEngine.Networking;
 
 public class TitleSceneController : MonoBehaviour
 {
+    public GameObject showFormulaButton;
+    public RectTransform panel;
+    public GameObject loadingPanel;
+
     public static List<string> smiles = new List<string>();
 
     private bool useAIServer = false;
@@ -23,6 +27,8 @@ public class TitleSceneController : MonoBehaviour
     {
         string rawText = string.Empty;
         List<string> rawSmiles = new List<string>();
+
+        loadingPanel.SetActive(true);
 
         // fetch raw Text Data
         if (useAIServer)
@@ -68,11 +74,18 @@ public class TitleSceneController : MonoBehaviour
         foreach (int i in randomIndexes)
         {
             string filtered = Regex.Replace(rawSmiles[i], @"[()23=#\[\]]", string.Empty).ToUpper();
-
-            Debug.Log(filtered);
             smiles.Add(filtered);
         }
 
-        yield break;
+        // Instantiate Buttons
+        for (int i = 0; i < smiles.Count; i++)
+        {
+            FormulaButtonBehaviour button = Instantiate(showFormulaButton, panel).GetComponent<FormulaButtonBehaviour>();
+            button.Init(smiles[i]);
+            button.GetComponent<RectTransform>().anchoredPosition = new Vector3(0, -60 * (i + 1), 0);
+        }
+
+        yield return new WaitForSeconds(0.3f);
+        loadingPanel.SetActive(false);
     }
 }

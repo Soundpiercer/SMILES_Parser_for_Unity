@@ -5,51 +5,32 @@ using System.Collections.Generic;
 using System.Text.RegularExpressions;
 using System.Linq;
 using UnityEngine;
+using UnityEngine.UI;
+using UnityEngine.SceneManagement;
 
 public class SmilesParseEngine : MonoBehaviour
 {
     public GameObject smilesObjectPrefab;
     public GameObject smilesEdgePrefab;
     public Transform smilesObjectRoot;
+    public Text formulaText;
 
-    private List<string> smiles = new List<string>();
-    private List<Graph<Atom>> graphs = new List<Graph<Atom>>();
-    private Graph<Atom> Graph
-    {
-        get { return graphs.Count == 0 ? null : graphs[0]; }
-    }
+    public static string formula = string.Empty;
+    private Graph<Atom> Graph = new Graph<Atom>();
 
     private void Start()
     {
-        ReadText();
-        Parse(0);
+        Parse();
     }
 
-    private void ReadText()
+    private void Parse()
     {
-        TextAsset textAsset = Resources.Load<TextAsset>("40smiles");
-
-        using (StringReader sr = new StringReader(textAsset.text))
-        {
-            while (sr.Peek() >= 0)
-            {
-                smiles.Add(sr.ReadLine());
-            }
-        }
-    }
-
-    private void Parse(int idx)
-    {
-        string source = smiles[idx];
-        graphs.Add(new Graph<Atom>());
-        Debug.Log(source);
-
         // ★ Step 1. Detect Rings and separate it from smiles string
         Dictionary<int, Ring> rings = new Dictionary<int, Ring>();
         int j = 0;
-        for (int i = 0; i < source.Length; i++)
+        for (int i = 0; i < formula.Length; i++)
         {
-            char c = source[i];
+            char c = formula[i];
             if (Regex.IsMatch(c.ToString(), @"[\d-]"))
             {
                 int id = int.Parse(c.ToString());
@@ -90,7 +71,7 @@ public class SmilesParseEngine : MonoBehaviour
         }
         */
 
-        string molecules = Regex.Replace(source, @"[\d-]", string.Empty);
+        string molecules = Regex.Replace(formula, @"[\d-]", string.Empty);
         // Debug.Log(molecules);
 
 
@@ -152,6 +133,9 @@ public class SmilesParseEngine : MonoBehaviour
         }
 
         smilesObjectRoot.position = -position / childCount;
+
+        // ★ Step 4. Finish. Show Formula Text
+        formulaText.text = formula;
     }
 
     #region Step 3
@@ -276,5 +260,10 @@ public class SmilesParseEngine : MonoBehaviour
     {
         Ring ring = rings.First(i => i.Value.endAddress == index).Value;
         return ring;
+    }
+
+    public void Exit()
+    {
+        SceneManager.LoadScene(0);
     }
 }
