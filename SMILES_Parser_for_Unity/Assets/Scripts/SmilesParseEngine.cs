@@ -9,6 +9,7 @@ using UnityEngine;
 public class SmilesParseEngine : MonoBehaviour
 {
     public GameObject smilesObjectPrefab;
+    public GameObject smilesEdgePrefab;
 
     private List<string> smiles = new List<string>();
     private List<Graph<Atom>> graphs = new List<Graph<Atom>>();
@@ -109,7 +110,7 @@ public class SmilesParseEngine : MonoBehaviour
         }
 
         // ★ Step 3. Build Structure
-        List<AtomBehaviour> atoms = DepthFirstSearchInstantiate(Graph);
+        List<AtomBehaviour> atoms = CreateAtoms(Graph);
         Ring targetRing = new Ring();
         foreach (AtomBehaviour atom in atoms)
         {
@@ -135,10 +136,14 @@ public class SmilesParseEngine : MonoBehaviour
 
             if (afterRingAtoms.Count > 0)
                 RelocateAtoms(afterRingAtoms, ringAtoms.Last(), directionAfterRingified);
-        }    
+        }
+
+        // Create Edges
+        CreateEdges(Graph, atoms);
     }
 
-    private List<AtomBehaviour> DepthFirstSearchInstantiate(Graph<Atom> graph)
+    #region Step 3
+    private List<AtomBehaviour> CreateAtoms(Graph<Atom> graph)
     {
         List<AtomBehaviour> result = new List<AtomBehaviour>();
 
@@ -176,8 +181,6 @@ public class SmilesParseEngine : MonoBehaviour
                     result.Add(neighborObject);
                     previous = neighborObject;
                 }
-
-                //Debug.Log(node.Data.id + ", " + neighbor.Data.id);
             }
         }
 
@@ -219,6 +222,29 @@ public class SmilesParseEngine : MonoBehaviour
             afterRingAtoms[i].transform.position = ringEnd.transform.position + direction * (i + 1);
         }
     }
+
+    private void CreateEdges(Graph<Atom> graph, List<AtomBehaviour> atoms)
+    {
+        foreach (AtomBehaviour atom in atoms)
+        {
+            Node<Atom> atomNode = graph.GetNode(atom.ID);
+            if (atomNode.Neighbors.Count > 0)
+            {
+                AtomBehaviour from = atoms.Find(a => a.ID == atomNode.Data.id);
+
+                List<Node<Atom>> neighbors = atomNode.Neighbors;
+                foreach (Node<Atom> node in neighbors)
+                {
+                    AtomBehaviour to = atoms.Find(a => a.ID == node.Data.id);
+
+                    EdgeBehaviour edgeObject = Instantiate(smilesEdgePrefab)
+                        .AddComponent<EdgeBehaviour>();
+                    edgeObject.Init(from, to);
+                }
+            }
+        }
+    }
+    #endregion
 
     private bool IsRingEnd(int index, Dictionary<int, Ring> rings)
     {

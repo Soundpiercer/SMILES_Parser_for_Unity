@@ -155,6 +155,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   smilesObjectPrefab: {fileID: 3550161001005749397, guid: e030bbb5d9c51441b832bf7727db9891,
     type: 3}
+  smilesEdgePrefab: {fileID: 6479168202188037612, guid: 96bb56fa39b9c4279ae5d08382fa0216,
+    type: 3}
 --- !u!4 &131609946
 Transform:
   m_ObjectHideFlags: 0
