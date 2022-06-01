@@ -13,7 +13,7 @@ public class TitleSceneController : MonoBehaviour
 
     public static List<string> smiles = new List<string>();
 
-    private bool useAIServer = true;
+    private bool useAIServer = false;
     private const string AI_SERVER_HOST = "";
 
     public void Generate()
@@ -73,7 +73,8 @@ public class TitleSceneController : MonoBehaviour
 
         foreach (int i in randomIndexes)
         {
-            smiles.Add(rawSmiles[i]);
+            string filtered = Regex.Replace(rawSmiles[i], @"[()23=#\[\]]", string.Empty).ToUpper();
+            smiles.Add(filtered);
         }
 
         // Instantiate Buttons
