@@ -109,8 +109,33 @@ public class SmilesParseEngine : MonoBehaviour
         }
 
         // ★ Step 3. Build Structure
-        List<AtomBehaviour> buildorder = DepthFirstSearchInstantiate(Graph);
-        Ringify(buildorder);
+        List<AtomBehaviour> atoms = DepthFirstSearchInstantiate(Graph);
+        Ring targetRing = new Ring();
+        foreach (AtomBehaviour atom in atoms)
+        {
+            if (IsRingEnd(atom.ID, rings))
+            {
+                targetRing = GetRing(atom.ID, rings);
+            }
+        }
+
+        List<AtomBehaviour> ringAtoms = atoms.FindAll(atom => atom.ID >= targetRing.startAddress && atom.ID <= targetRing.endAddress)
+            .OrderBy(atom => atom.buildorder)
+            .ToList();
+
+        // Relocate atoms affected by rings
+        Vector3 directionAfterRingified = Vector3.right;
+        if (ringAtoms.Count > 0)
+        {
+            directionAfterRingified = Ringify(ringAtoms);
+
+            List<AtomBehaviour> afterRingAtoms = atoms.FindAll(atom => atom.ID > targetRing.endAddress)
+                .OrderBy(atom => atom.buildorder)
+                .ToList();
+
+            if (afterRingAtoms.Count > 0)
+                RelocateAtoms(afterRingAtoms, ringAtoms.Last(), directionAfterRingified);
+        }    
     }
 
     private List<AtomBehaviour> DepthFirstSearchInstantiate(Graph<Atom> graph)
@@ -119,6 +144,7 @@ public class SmilesParseEngine : MonoBehaviour
 
         Stack<Node<Atom>> stack = new Stack<Node<Atom>>();
         AtomBehaviour previous;
+        int buildorder = 0;
 
         // Init Root
         Node<Atom> rootNode = graph.GetNode(0);      
@@ -126,7 +152,7 @@ public class SmilesParseEngine : MonoBehaviour
         
         AtomBehaviour root = Instantiate(smilesObjectPrefab)
             .AddComponent<AtomBehaviour>();
-        root.Init(rootNode.Data);
+        root.Init(rootNode.Data, buildorder);
         result.Add(root);
         previous = root;
 
@@ -146,7 +172,7 @@ public class SmilesParseEngine : MonoBehaviour
 
                     AtomBehaviour neighborObject = Instantiate(smilesObjectPrefab, previous.transform.position + (Vector3.right * 2), Quaternion.identity)
                         .AddComponent<AtomBehaviour>();
-                    neighborObject.Init(neighbor.Data);
+                    neighborObject.Init(neighbor.Data, ++buildorder);
                     result.Add(neighborObject);
                     previous = neighborObject;
                 }
@@ -158,11 +184,39 @@ public class SmilesParseEngine : MonoBehaviour
         return result;
     }
 
-    private void Ringify(List<AtomBehaviour> buildorder)
+    private Vector3 Ringify(List<AtomBehaviour> ringAtoms)
     {
-        foreach (AtomBehaviour atom in buildorder)
-        {
+        Vector3 direction = Vector3.right * 2;
 
+        for (int i = 1; i < ringAtoms.Count; i++)
+        {
+            ringAtoms[i].transform.position = ringAtoms[i - 1].transform.position + Vector3.right * 2;
+
+            ringAtoms[i].transform.RotateAround(
+                ringAtoms[i - 1].transform.position, Vector3.forward, 360f / ringAtoms.Count * i);
+
+            //direction.x = Mathf.Cos(360f / ringAtoms.Count * i);
+            //direction.y = Mathf.Sin(360f / ringAtoms.Count * i);
+        }
+
+        for (int i = 1; i < ringAtoms.Count; i++)
+        {
+            ringAtoms[i].transform.RotateAround(
+                ringAtoms[0].transform.position, Vector3.forward, -360f / ringAtoms.Count * 2);
+        }
+
+        direction.x = Mathf.Cos(360f / (ringAtoms.Count - 4)) * 2;
+        direction.y = Mathf.Sin(360f / (ringAtoms.Count - 4)) * 2;
+
+        Debug.Log(direction);
+        return direction;
+    }
+
+    private void RelocateAtoms(List<AtomBehaviour> afterRingAtoms, AtomBehaviour ringEnd, Vector3 direction)
+    {
+        for (int i = 0; i < afterRingAtoms.Count; i++)
+        {
+            afterRingAtoms[i].transform.position = ringEnd.transform.position + direction * (i + 1);
         }
     }
 
