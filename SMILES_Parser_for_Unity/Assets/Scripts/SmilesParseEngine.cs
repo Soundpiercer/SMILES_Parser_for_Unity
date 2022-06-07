@@ -81,9 +81,10 @@ public class SmilesParseEngine : MonoBehaviour
             Graph.AddNode(new Atom(molecules[i], i));
         }
 
-        for (int i = 0; i < Graph.NodesCount - 1; i++)
+        for (int i = 0; i < Graph.NodesCount; i++)
         {
-            Graph.AddEdge(i, i + 1, 1);
+            if (i != Graph.NodesCount - 1)
+                Graph.AddEdge(i, i + 1, 1);
 
             if (IsRingEnd(i, rings))
             {
@@ -193,9 +194,6 @@ public class SmilesParseEngine : MonoBehaviour
 
             ringAtoms[i].transform.RotateAround(
                 ringAtoms[i - 1].transform.position, Vector3.forward, 360f / ringAtoms.Count * i);
-
-            //direction.x = Mathf.Cos(360f / ringAtoms.Count * i);
-            //direction.y = Mathf.Sin(360f / ringAtoms.Count * i);
         }
 
         for (int i = 1; i < ringAtoms.Count; i++)
@@ -204,10 +202,11 @@ public class SmilesParseEngine : MonoBehaviour
                 ringAtoms[0].transform.position, Vector3.forward, -360f / ringAtoms.Count * 2);
         }
 
-        direction.x = Mathf.Cos(360f / (ringAtoms.Count - 4)) * 2;
-        direction.y = Mathf.Sin(360f / (ringAtoms.Count - 4)) * 2;
+        float degree = 360f / ringAtoms.Count * (ringAtoms.Count - 4) * Mathf.Deg2Rad;
+        direction.x = Mathf.Cos(degree) * 2;
+        direction.y = Mathf.Sin(degree) * 2;
 
-        Debug.Log(direction);
+        Debug.Log(degree * Mathf.Rad2Deg + " " + direction);
         return direction;
     }
 
