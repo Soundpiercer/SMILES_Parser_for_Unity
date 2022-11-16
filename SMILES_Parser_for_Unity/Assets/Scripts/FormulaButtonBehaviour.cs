@@ -9,8 +9,12 @@ public class FormulaButtonBehaviour : MonoBehaviour
     public string formula;
     public Text formulaText;
 
-    public void Init(string formula)
+    private GenerateWindow window;
+
+    public void Init(string formula, GenerateWindow window)
     {
+        this.window = window;
+
         this.formula = formula;
         formulaText.text = formula;
     }
@@ -18,6 +22,7 @@ public class FormulaButtonBehaviour : MonoBehaviour
     public void Show()
     {
         SmilesParseEngine.formula = formula;
-        SceneManager.LoadScene((int)Scene.ViewerScene);
+        window.OpenViewer();
+        //SceneManager.LoadScene((int)Scene.ViewerScene);
     }
 }

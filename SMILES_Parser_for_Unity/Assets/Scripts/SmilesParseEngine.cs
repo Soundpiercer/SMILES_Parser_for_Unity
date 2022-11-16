@@ -13,7 +13,7 @@ public class SmilesParseEngine : MonoBehaviour
     public GameObject smilesObjectPrefab;
     public GameObject smilesEdgePrefab;
     public Transform smilesObjectRoot;
-    public Text formulaText;
+    //public Text formulaText;
 
     public static string formula = string.Empty;
     private Graph<Atom> Graph = new Graph<Atom>();
@@ -135,8 +135,14 @@ public class SmilesParseEngine : MonoBehaviour
 
         smilesObjectRoot.position = -position / childCount;
 
+        // Apply SMILES Unity Layer
+        foreach (Transform t in smilesObjectRoot)
+        {
+            t.gameObject.layer = (int)Layer.SMILES;
+        }
+
         // ★ Step 4. Finish. Show Formula Text
-        formulaText.text = formula;
+        //formulaText.text = formula;
     }
 
     #region Step 3
