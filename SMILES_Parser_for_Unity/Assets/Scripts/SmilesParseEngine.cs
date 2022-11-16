@@ -263,6 +263,6 @@ public class SmilesParseEngine : MonoBehaviour
 
     public void Exit()
     {
-        SceneManager.LoadScene(0);
+        SceneManager.LoadScene((int)Scene.TitleScene);
     }
 }

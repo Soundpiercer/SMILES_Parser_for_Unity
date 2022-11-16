@@ -18,6 +18,6 @@ public class FormulaButtonBehaviour : MonoBehaviour
     public void Show()
     {
         SmilesParseEngine.formula = formula;
-        SceneManager.LoadScene(1);
+        SceneManager.LoadScene((int)Scene.ViewerScene);
     }
 }
