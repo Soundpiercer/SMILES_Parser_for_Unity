@@ -4,7 +4,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using Cysharp.Threading.Tasks;
 
-public class GenerateWindow : MonoBehaviour, IWindow
+public class SavedListWindow : MonoBehaviour, IWindow
 {
     public GameObject pregenerateUI;
     public GameObject viewerUI;
@@ -19,38 +19,34 @@ public class GenerateWindow : MonoBehaviour, IWindow
     public GameObject detailInfoPanel;
     public GameObject smilesViewer;
     private GameObject activeSmilesViewer;
-    public Button saveButton;
-
-    public static List<string> smiles;
 
     #region CONSTANT
     private const string AI_SERVER_HOST = "";
     #endregion
 
+    private void Start()
+    {
+        Init();
+        Generate();
+    }
+
     public void Init()
     {
         pregenerateUI.SetActive(true);
-        viewerUI.SetActive(false); 
+        viewerUI.SetActive(false);
     }
 
-    public void Generate()
-    {
-        GenerateTask().Forget();
-    }
-
-    private async UniTaskVoid GenerateTask()
+    private void Generate()
     {
         loadingPanel.SetActive(true);
-        smiles = await APIClient.GetTargetGenerateFormulas(AI_SERVER_HOST);
 
-        for (var i = 0; i < smiles.Count; i++)
+        for (int i = 0; i < UserDataManager.Instance.savedFormulaList.Count; i++)
         {
             var button = Instantiate(showFormulaButton, viewport).GetComponent<FormulaButtonBehaviour>();
-            button.Init(smiles[i], this);
+            button.Init(UserDataManager.Instance.savedFormulaList[i], this);
             button.GetComponent<RectTransform>().anchoredPosition = new Vector2(0, -60 * (i + 1));
         }
 
-        await UniTask.Delay(300);
         loadingPanel.SetActive(false);
     }
 
@@ -61,7 +57,6 @@ public class GenerateWindow : MonoBehaviour, IWindow
 
         pregenerateUI.SetActive(false);
         viewerUI.SetActive(true);
-        saveButton.interactable = true;
     }
 
     public void ToggleDetailInfoPanel()
@@ -72,7 +67,6 @@ public class GenerateWindow : MonoBehaviour, IWindow
     public void Save()
     {
         UserDataManager.Instance.AddFormula(SmilesParseEngine.formula);
-        saveButton.interactable = false;
     }
 
     public void CloseViewer()

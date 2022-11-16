@@ -8,10 +8,10 @@ public class FormulaButtonBehaviour : MonoBehaviour
 {
     public Text formulaText;
 
-    private GenerateWindow window;
+    private IWindow window;
     private string formula;
 
-    public void Init(string formula, GenerateWindow window)
+    public void Init(string formula, IWindow window)
     {
         this.window = window;
 

@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using System.Linq;
 
 public class UserDataManager : MonoBehaviour
 {
@@ -20,4 +21,18 @@ public class UserDataManager : MonoBehaviour
 
     // TODO : should add name, id, kind of stuff
     public List<string> savedFormulaList;
+
+    public void AddFormula(string formula)
+    {
+        string match = savedFormulaList.Find(s => s == formula);
+        if (string.IsNullOrEmpty(match))
+        {
+            savedFormulaList.Add(formula);
+            Debug.Log("Successfully saved! : " + formula);
+        }
+        else
+        {
+            Debug.LogWarning("Duplicated formula found, can't add!");
+        }
+    }
 }
