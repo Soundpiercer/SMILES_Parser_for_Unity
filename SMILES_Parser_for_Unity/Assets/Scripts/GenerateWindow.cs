@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 using Cysharp.Threading.Tasks;
 
 public class GenerateWindow : MonoBehaviour
@@ -8,14 +9,18 @@ public class GenerateWindow : MonoBehaviour
     public GameObject pregenerateUI;
     public GameObject viewerUI;
 
-    public GameObject showFormulaButton;
+    [Header("Pre-Generate UI")]
     public RectTransform viewport;
     public GameObject loadingPanel;
+    public GameObject showFormulaButton;
 
-    public static List<string> smiles;
-
+    [Header("Viewer UI")]
+    public Text formulaText;
+    public GameObject detailInfoPanel;
     public GameObject smilesViewer;
     private GameObject activeSmilesViewer;
+
+    public static List<string> smiles;
 
     #region CONSTANT
     private const string AI_SERVER_HOST = "";
@@ -48,12 +53,18 @@ public class GenerateWindow : MonoBehaviour
         loadingPanel.SetActive(false);
     }
 
-    public void OpenViewer()
+    public void OpenViewer(string formula = "")
     {
+        formulaText.text = formula;
         activeSmilesViewer = Instantiate(smilesViewer);
 
         pregenerateUI.SetActive(false);
         viewerUI.SetActive(true);
+    }
+
+    public void ToggleDetailInfoPanel()
+    {
+        detailInfoPanel.SetActive(!detailInfoPanel.activeSelf);
     }
 
     public void CloseViewer()
@@ -61,6 +72,13 @@ public class GenerateWindow : MonoBehaviour
         if (activeSmilesViewer != null)
             Destroy(activeSmilesViewer);
 
+        formulaText.text = string.Empty;
+
         Init();
+    }
+
+    private void OnDestroy()
+    {
+        CloseViewer();
     }
 }

@@ -6,10 +6,10 @@ using UnityEngine.SceneManagement;
 
 public class FormulaButtonBehaviour : MonoBehaviour
 {
-    public string formula;
     public Text formulaText;
 
     private GenerateWindow window;
+    private string formula;
 
     public void Init(string formula, GenerateWindow window)
     {
@@ -22,7 +22,7 @@ public class FormulaButtonBehaviour : MonoBehaviour
     public void Show()
     {
         SmilesParseEngine.formula = formula;
-        window.OpenViewer();
+        window.OpenViewer(formula);
         //SceneManager.LoadScene((int)Scene.ViewerScene);
     }
 }
