@@ -1692,9 +1692,9 @@ MonoBehaviour:
     type: 3}
   formulaText: {fileID: 7727131146617842847}
   detailInfoPanel: {fileID: 3878624247444189910}
+  saveButton: {fileID: 5674572419285968659}
   smilesViewer: {fileID: 1464065609068940633, guid: 7352cb4d954a1e6448b358b0edcef86f,
     type: 3}
-  saveButton: {fileID: 8158253905500992969}
 --- !u!1 &8041614160155723666
 GameObject:
   m_ObjectHideFlags: 0

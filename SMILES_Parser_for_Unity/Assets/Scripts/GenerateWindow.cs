@@ -17,10 +17,10 @@ public class GenerateWindow : MonoBehaviour, IWindow
     [Header("Viewer UI")]
     public Text formulaText;
     public GameObject detailInfoPanel;
+    public GameObject saveButton;
     public GameObject smilesViewer;
     private GameObject activeSmilesViewer;
-    public Button saveButton;
-
+    
     public static List<string> smiles;
 
     #region CONSTANT
@@ -61,7 +61,7 @@ public class GenerateWindow : MonoBehaviour, IWindow
 
         pregenerateUI.SetActive(false);
         viewerUI.SetActive(true);
-        saveButton.interactable = true;
+        saveButton.SetActive(true);
     }
 
     public void ToggleDetailInfoPanel()
@@ -72,7 +72,7 @@ public class GenerateWindow : MonoBehaviour, IWindow
     public void Save()
     {
         UserDataManager.Instance.AddFormula(SmilesParseEngine.formula);
-        saveButton.interactable = false;
+        saveButton.SetActive(false);
     }
 
     public void CloseViewer()
