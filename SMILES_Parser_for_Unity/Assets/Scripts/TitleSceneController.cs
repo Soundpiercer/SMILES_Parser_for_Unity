@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using Cysharp.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.SceneManagement;
 
 public class TitleSceneController : MonoBehaviour
 {
@@ -43,5 +44,10 @@ public class TitleSceneController : MonoBehaviour
                 menuFrameButtons[i].GetComponent<Image>().color = BUTTON_NORMAL;
             }
         }
+    }
+
+    public void Logout()
+    {
+        SceneManager.LoadScene((int)Scene.StartScene);
     }
 }
