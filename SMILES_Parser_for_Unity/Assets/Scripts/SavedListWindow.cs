@@ -52,6 +52,7 @@ public class SavedListWindow : MonoBehaviour, IWindow
         formulaText.text = formula;
         activeSmilesViewer = Instantiate(smilesViewer).GetComponentInChildren<SmilesParseEngine>();
         activeSmilesViewer.formula = formula;
+        activeSmilesViewer.Init();
 
         pregenerateUI.SetActive(false);
         viewerUI.SetActive(true);

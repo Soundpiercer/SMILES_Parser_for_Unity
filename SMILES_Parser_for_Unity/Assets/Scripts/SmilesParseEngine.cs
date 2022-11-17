@@ -17,7 +17,7 @@ public class SmilesParseEngine : MonoBehaviour
     public string formula = string.Empty;
     private Graph<Atom> Graph = new Graph<Atom>();
 
-    private void Start()
+    public void Init()
     {
         Parse();
     }
@@ -266,8 +266,15 @@ public class SmilesParseEngine : MonoBehaviour
         return ring;
     }
 
-    public void Exit()
+    public void Clear()
     {
-        SceneManager.LoadScene((int)Scene.TitleScene);
+        // Flush All data without Destroying the viewer
+        formula = string.Empty;
+        Graph = new Graph<Atom>();
+
+        foreach (Transform child in smilesObjectRoot)
+        {
+            Destroy(child.gameObject);
+        }
     }
 }
