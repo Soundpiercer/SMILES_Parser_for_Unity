@@ -19,15 +19,11 @@ public class GenerateWindow : MonoBehaviour, IWindow
     public GameObject detailInfoPanel;
     public GameObject saveButton;
     public GameObject smilesViewer;
-    private GameObject activeSmilesViewer;
+    private SmilesParseEngine activeSmilesViewer;
     
-    public static List<string> smiles;
+    private List<string> formulaList;
 
-    #region CONSTANT
-    private const string AI_SERVER_HOST = "";
-    #endregion
-
-    public void Init()
+    private void Init()
     {
         pregenerateUI.SetActive(true);
         viewerUI.SetActive(false); 
@@ -41,12 +37,12 @@ public class GenerateWindow : MonoBehaviour, IWindow
     private async UniTaskVoid GenerateTask()
     {
         loadingPanel.SetActive(true);
-        smiles = await APIClient.GetTargetGenerateFormulas(AI_SERVER_HOST);
+        formulaList = await APIClient.GetTargetGenerateFormulas(NetworkConfig.AI_SERVER_HOST);
 
-        for (var i = 0; i < smiles.Count; i++)
+        for (var i = 0; i < formulaList.Count; i++)
         {
             var button = Instantiate(showFormulaButton, viewport).GetComponent<FormulaButtonBehaviour>();
-            button.Init(smiles[i], this);
+            button.Init(formulaList[i], this);
             button.GetComponent<RectTransform>().anchoredPosition = new Vector2(0, -60 * (i + 1));
         }
 
@@ -54,10 +50,12 @@ public class GenerateWindow : MonoBehaviour, IWindow
         loadingPanel.SetActive(false);
     }
 
+    #region Viewer UI
     public void OpenViewer(string formula = "")
     {
         formulaText.text = formula;
-        activeSmilesViewer = Instantiate(smilesViewer);
+        activeSmilesViewer = Instantiate(smilesViewer).GetComponentInChildren<SmilesParseEngine>();
+        activeSmilesViewer.formula = formula;
 
         pregenerateUI.SetActive(false);
         viewerUI.SetActive(true);
@@ -71,14 +69,14 @@ public class GenerateWindow : MonoBehaviour, IWindow
 
     public void Save()
     {
-        UserDataManager.Instance.AddFormula(SmilesParseEngine.formula);
+        UserDataManager.Instance.AddFormula(activeSmilesViewer.formula);
         saveButton.SetActive(false);
     }
 
     public void CloseViewer()
     {
         if (activeSmilesViewer != null)
-            Destroy(activeSmilesViewer);
+            Destroy(activeSmilesViewer.transform.parent.gameObject);
 
         formulaText.text = string.Empty;
 
@@ -89,4 +87,5 @@ public class GenerateWindow : MonoBehaviour, IWindow
     {
         CloseViewer();
     }
+    #endregion
 }

@@ -13,9 +13,8 @@ public class SmilesParseEngine : MonoBehaviour
     public GameObject smilesObjectPrefab;
     public GameObject smilesEdgePrefab;
     public Transform smilesObjectRoot;
-    //public Text formulaText;
 
-    public static string formula = string.Empty;
+    public string formula = string.Empty;
     private Graph<Atom> Graph = new Graph<Atom>();
 
     private void Start()

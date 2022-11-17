@@ -21,8 +21,6 @@ public class FormulaButtonBehaviour : MonoBehaviour
 
     public void Show()
     {
-        SmilesParseEngine.formula = formula;
         window.OpenViewer(formula);
-        //SceneManager.LoadScene((int)Scene.ViewerScene);
     }
 }

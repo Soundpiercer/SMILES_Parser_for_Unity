@@ -18,25 +18,21 @@ public class SavedListWindow : MonoBehaviour, IWindow
     public Text formulaText;
     public GameObject detailInfoPanel;
     public GameObject smilesViewer;
-    private GameObject activeSmilesViewer;
-
-    #region CONSTANT
-    private const string AI_SERVER_HOST = "";
-    #endregion
+    private SmilesParseEngine activeSmilesViewer;
 
     private void Start()
     {
         Init();
-        Generate();
+        ShowSavedFormulaCells();
     }
 
-    public void Init()
+    private void Init()
     {
         pregenerateUI.SetActive(true);
         viewerUI.SetActive(false);
     }
 
-    private void Generate()
+    private void ShowSavedFormulaCells()
     {
         loadingPanel.SetActive(true);
 
@@ -50,10 +46,12 @@ public class SavedListWindow : MonoBehaviour, IWindow
         loadingPanel.SetActive(false);
     }
 
+    #region Viewer UI
     public void OpenViewer(string formula = "")
     {
         formulaText.text = formula;
-        activeSmilesViewer = Instantiate(smilesViewer);
+        activeSmilesViewer = Instantiate(smilesViewer).GetComponentInChildren<SmilesParseEngine>();
+        activeSmilesViewer.formula = formula;
 
         pregenerateUI.SetActive(false);
         viewerUI.SetActive(true);
@@ -64,15 +62,10 @@ public class SavedListWindow : MonoBehaviour, IWindow
         detailInfoPanel.SetActive(!detailInfoPanel.activeSelf);
     }
 
-    public void Save()
-    {
-        UserDataManager.Instance.AddFormula(SmilesParseEngine.formula);
-    }
-
     public void CloseViewer()
     {
         if (activeSmilesViewer != null)
-            Destroy(activeSmilesViewer);
+            Destroy(activeSmilesViewer.transform.parent.gameObject);
 
         formulaText.text = string.Empty;
 
@@ -83,4 +76,5 @@ public class SavedListWindow : MonoBehaviour, IWindow
     {
         CloseViewer();
     }
+    #endregion
 }
