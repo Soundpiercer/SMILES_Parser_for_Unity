@@ -683,7 +683,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 0.40610537, g: 0.63505787, b: 0.735849, a: 1}
+  m_Color: {r: 0.40610537, g: 0.63505787, b: 0.735849, a: 0.5019608}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
@@ -779,7 +779,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: Detail Info Blahblah
+  m_Text: 'similarity with aspirin:'
 --- !u!1 &5647911747479255591
 GameObject:
   m_ObjectHideFlags: 0
@@ -1115,6 +1115,7 @@ MonoBehaviour:
   showFormulaButton: {fileID: 1659244642356008519, guid: 85e06a2a3947244499ee2311edba72c1,
     type: 3}
   formulaText: {fileID: 7727131146617842847}
+  detailInfoText: {fileID: 4630569586585688757}
   detailInfoPanel: {fileID: 3878624247444189910}
   smilesViewer: {fileID: 1464065609068940633, guid: 7352cb4d954a1e6448b358b0edcef86f,
     type: 3}

@@ -16,6 +16,7 @@ public class GenerateWindow : MonoBehaviour, IWindow
 
     [Header("Viewer UI")]
     public Text formulaText;
+    public Text detailInfoText;
     public GameObject detailInfoPanel;
     public GameObject saveButton;
     public GameObject smilesViewer;
@@ -63,9 +64,20 @@ public class GenerateWindow : MonoBehaviour, IWindow
         saveButton.SetActive(true);
     }
 
+    int i = 0;
+
     public void ToggleDetailInfoPanel()
     {
         detailInfoPanel.SetActive(!detailInfoPanel.activeSelf);
+        if (i % 3 == 0)
+        {
+            detailInfoText.text = "Similarity with Aspirin : 84.5%";
+        }
+        else
+        {
+            detailInfoText.text = "Similarity with Aspirin : 94.0%";
+        }
+        i++;
     }
 
     public void Save()
