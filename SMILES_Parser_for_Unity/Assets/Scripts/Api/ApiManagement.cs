@@ -1,9 +1,10 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Text.RegularExpressions;
 using Cysharp.Threading.Tasks;
 using UnityEngine;
-using UnityEngine.Networking;
+using Random = UnityEngine.Random;
 
 namespace Api
 {
@@ -11,7 +12,6 @@ namespace Api
     {
         public static async UniTask<List<string>> GetTargetGenerateFormulas(string serverHost)
         {
-            // TODO : ServerHost 내용을 ApiManagement Class에서 관리하도록 변경
             string rawData;
             if (serverHost.Length != 0)
             {
@@ -28,8 +28,8 @@ namespace Api
 
         private static async UniTask<string> GetTargetDataFromServer()
         {
-            var response = await PrivateApiClient.PostTargetData(new PostTargetDataRequest());
-            return response.data;
+            var response = await PrivateApiClient.MolecularRequest(UserDataManager.Instance.accessToken);
+            return response.formula;
         }
 
         private static string GetTargetDataFromLocalData()

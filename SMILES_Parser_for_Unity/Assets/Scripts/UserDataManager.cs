@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using System.Linq;
+using Api;
 
 public class UserDataManager : MonoBehaviour
 {
@@ -21,7 +22,16 @@ public class UserDataManager : MonoBehaviour
 
     // TODO : should add name, id, kind of stuff
     public List<string> savedFormulaList;
+    public string accessToken;
+    public string refreshToken;
 
+    public void SetLoginData(LoginResponse response)
+    {
+        accessToken = response.access;
+        refreshToken = response.refresh;
+        Debug.Log($"TEST | {response}");
+    }
+    
     public void AddFormula(string formula)
     {
         string match = savedFormulaList.Find(s => s == formula);
