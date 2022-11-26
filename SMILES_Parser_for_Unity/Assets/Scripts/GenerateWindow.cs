@@ -1,5 +1,5 @@
-using System.Collections;
 using System.Collections.Generic;
+using Api;
 using UnityEngine;
 using UnityEngine.UI;
 using Cysharp.Threading.Tasks;
@@ -37,7 +37,7 @@ public class GenerateWindow : MonoBehaviour, IWindow
     private async UniTaskVoid GenerateTask()
     {
         loadingPanel.SetActive(true);
-        formulaList = await APIClient.GetTargetGenerateFormulas(NetworkConfig.AI_SERVER_HOST);
+        formulaList = await ApiManagement.GetTargetGenerateFormulas(NetworkConfig.AI_SERVER_HOST);
 
         for (var i = 0; i < formulaList.Count; i++)
         {
