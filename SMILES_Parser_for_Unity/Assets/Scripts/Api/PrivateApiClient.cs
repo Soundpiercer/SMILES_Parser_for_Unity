@@ -7,7 +7,7 @@ namespace Api
 {
     public class PrivateApiClient : MonoBehaviour
     {
-        private const string ApiEndPoint = "http://15.165.247.54:8000/api";
+        private const string ApiEndPoint = "http://15.165.247.54:80/api";
 
         public static async UniTask<RegisterResponse> RegisterRequest(RegisterRequest request)
         {
