@@ -112,6 +112,7 @@ public enum Element
     //Cl = 17,
     K = 19,
     D = 2,
+    T = 3,
     //- = 2,
     //Ca = 20,
 }

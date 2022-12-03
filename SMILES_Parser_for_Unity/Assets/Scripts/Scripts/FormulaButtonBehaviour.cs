@@ -14,6 +14,7 @@ public class FormulaButtonBehaviour : MonoBehaviour
     {
         this.formula = formula;
         string filter = Regex.Replace(formula, @"[D]", "=").ToUpper();
+        filter = Regex.Replace(filter, @"[T]", "#").ToUpper();
         formulaText.text = filter;
     }
 

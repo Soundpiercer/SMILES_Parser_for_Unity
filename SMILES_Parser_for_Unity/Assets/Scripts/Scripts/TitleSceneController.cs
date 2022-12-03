@@ -73,8 +73,9 @@ public class TitleSceneController : MonoBehaviour
 
         foreach (int i in randomIndexes)
         {
-            string filtered = Regex.Replace(rawSmiles[i], @"[()23#\[\]]", string.Empty).ToUpper();
+            string filtered = Regex.Replace(rawSmiles[i], @"[()23\[\]]", string.Empty).ToUpper();
             filtered = Regex.Replace(filtered, @"[=]", "D").ToUpper();
+            filtered = Regex.Replace(filtered, @"[#]", "T").ToUpper();
             smiles.Add(filtered);
         }
 
