@@ -14,7 +14,11 @@ public class EdgeBehaviour : MonoBehaviour
         this.from = from;
         this.to = to;
         gameObject.name = string.Format("edge {0}, {1}", from.ID, to.ID);
-        gameObject.GetComponent<MeshRenderer>().material.color = default_color;
+
+        foreach (Transform t in transform)
+        {
+            t.GetComponent<MeshRenderer>().material.color = default_color;
+        }
 
         gameObject.transform.position =
             (from.transform.position + to.transform.position) / 2f;

@@ -112,4 +112,9 @@ MonoBehaviour:
     type: 3}
   smilesEdgePrefab: {fileID: 6479168202188037612, guid: 96bb56fa39b9c4279ae5d08382fa0216,
     type: 3}
+  smilesDoubleEdgePrefab: {fileID: 6479168202188037612, guid: e056ef4c76f2d7c44ae2179818d69d28,
+    type: 3}
+  smilesTripleEdgePrefab: {fileID: 6479168202188037612, guid: d59c3814f8b723f4bac43b639ac3a85f,
+    type: 3}
   smilesObjectRoot: {fileID: 1464065610702953208}
+  formula: 
