@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Text.RegularExpressions;
+using System.Linq;
 using Cysharp.Threading.Tasks;
 using UnityEngine;
 using Random = UnityEngine.Random;
@@ -10,26 +11,25 @@ namespace Api
 {
     public static class ApiManagement
     {
-        public static async UniTask<List<string>> GetTargetGenerateFormulas(string serverHost)
+        public static async UniTask<List<string>> GetTargetGenerateFormulas(bool isRemoteServer)
         {
-            string rawData;
-            if (serverHost.Length != 0)
+            List<string> formulaList;
+            if (isRemoteServer)
             {
-                rawData = await GetTargetDataFromServer();
+                formulaList = await GetTargetDataFromServer();
             }
             else
             {
-                rawData = GetTargetDataFromLocalData();
+                formulaList = RawTextDataToFormulasList(GetTargetDataFromLocalData());
             }
 
-            var rawListData = RawTextDataToFormulasList(rawData);
-            return RandomlyPickFormulas(rawListData, 8);
+            return RandomlyPickFormulas(formulaList, 8);
         }
 
-        private static async UniTask<string> GetTargetDataFromServer()
+        private static async UniTask<List<string>> GetTargetDataFromServer()
         {
-            var response = await PrivateApiClient.MolecularRequest(UserDataManager.Instance.accessToken);
-            return response.formula;
+            var response = await PrivateApiClient.TestMolecularRequest(new TestPostMolecularRequest("aspirin"));
+            return response.data.ToList();
         }
 
         private static string GetTargetDataFromLocalData()

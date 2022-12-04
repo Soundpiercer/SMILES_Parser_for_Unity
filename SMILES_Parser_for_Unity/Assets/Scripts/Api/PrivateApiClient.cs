@@ -7,7 +7,8 @@ namespace Api
 {
     public class PrivateApiClient : MonoBehaviour
     {
-        private const string ApiEndPoint = "http://15.165.247.54:80/api";
+        // warning : Requests towards Django should end with slash!
+        private const string ApiEndPoint = "http://15.165.247.54:80/api/";
 
         public static async UniTask<RegisterResponse> RegisterRequest(RegisterRequest request)
         {
@@ -29,6 +30,14 @@ namespace Api
             var requestContext = new RequestContext(requestUrl);
             requestContext.Headers.Add("Authoriation",  "Bearer " + accessToken);
             return await HttpClient.Post<PostMolecularResponse>(requestContext);
+        }
+
+        public static async UniTask<TestPostMolecularResponse> TestMolecularRequest(TestPostMolecularRequest request)
+        {
+            const string requestUrl = ApiEndPoint;
+            var requestContext = new RequestContext(requestUrl, body: request.ToJson());
+
+            return await HttpClient.Post<TestPostMolecularResponse>(requestContext);
         }
     }
 
@@ -102,7 +111,27 @@ namespace Api
         public string effect;
         public string others;
     }
-    
+
+    [Serializable]
+    public class TestPostMolecularRequest : IJsonExtensions
+    {
+        public string keyword;
+
+        private TestPostMolecularRequest() { }
+
+        public TestPostMolecularRequest(string keyword)
+        {
+            this.keyword = keyword;
+        }
+    }
+
+    [Serializable]
+    public class TestPostMolecularResponse : IJsonExtensions
+    {
+        public string keyword;
+        public string[] data;
+    }
+
     public interface IJsonExtensions {}
     
     public static class JsonExtensions

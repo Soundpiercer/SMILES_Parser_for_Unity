@@ -67,6 +67,9 @@ namespace Api
             try
             {
                 var res = await request.SendWebRequest().WithCancellation(cts.Token);
+
+                // TODO : no problem with JsonUtility.FromJson Deserialization, but causes infinite loop while returning
+                // returning default does not make infinite loop
                 return JsonUtility.FromJson<T>(res.downloadHandler.text);
             }
             catch (OperationCanceledException ex)

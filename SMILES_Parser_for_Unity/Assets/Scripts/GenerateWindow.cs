@@ -37,7 +37,7 @@ public class GenerateWindow : MonoBehaviour, IWindow
     private async UniTaskVoid GenerateTask()
     {
         loadingPanel.SetActive(true);
-        formulaList = await ApiManagement.GetTargetGenerateFormulas(NetworkConfig.AI_SERVER_HOST);
+        formulaList = await ApiManagement.GetTargetGenerateFormulas(true);
 
         for (var i = 0; i < formulaList.Count; i++)
         {
