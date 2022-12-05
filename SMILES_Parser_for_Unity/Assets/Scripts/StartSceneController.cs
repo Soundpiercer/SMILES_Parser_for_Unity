@@ -23,12 +23,12 @@ public class StartSceneController : MonoBehaviour
     {
         // TODO : Register UI
         var req = new RegisterRequest(
-            "test", 
-            "test", 
-            "test", 
-            "test@test.com",
-            "test_first_name",
-            "test_last_name"
+            "test123456789", 
+            "testcoldbell", 
+            "testcoldbell", 
+            "test1@test.com",
+            "test1_first_name",
+            "test1_last_name"
             );
         var resp = await PrivateApiClient.RegisterRequest(req);
         LoadStartScene();

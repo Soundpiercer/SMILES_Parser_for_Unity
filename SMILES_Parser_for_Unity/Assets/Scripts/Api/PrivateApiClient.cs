@@ -12,21 +12,27 @@ namespace Api
 
         public static async UniTask<RegisterResponse> RegisterRequest(RegisterRequest request)
         {
-            const string requestUrl = ApiEndPoint + "/account/register/";
+            const string requestUrl = ApiEndPoint + "account/register/";
+            request.username = request.username.ToLower();
+            request.password = request.password.ToLower();
+            request.password2 = request.password2.ToLower();
             var requestContext = new RequestContext(requestUrl, body: request.ToJson());
             return await HttpClient.Post<RegisterResponse>(requestContext);
         }
         
         public static async UniTask<LoginResponse> LoginRequest(LoginRequest request)
         {
-            const string requestUrl = ApiEndPoint + "/account/login/";
+            const string requestUrl = ApiEndPoint + "account/login/";
+            request.username = request.username.ToLower();
+            request.password = request.password.ToLower();
+            Debug.Log(request);
             var requestContext = new RequestContext(requestUrl, body: request.ToJson());
             return await HttpClient.Post<LoginResponse>(requestContext);
         }
         
         public static async UniTask<PostMolecularResponse> MolecularRequest(string accessToken)
         {
-            const string requestUrl = ApiEndPoint + "/molecular/";
+            const string requestUrl = ApiEndPoint + "molecular/";
             var requestContext = new RequestContext(requestUrl);
             requestContext.Headers.Add("Authoriation",  "Bearer " + accessToken);
             return await HttpClient.Post<PostMolecularResponse>(requestContext);
