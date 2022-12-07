@@ -64,7 +64,12 @@ namespace Api
             foreach (var i in randomIndexes)
             {
                 // TODO : 소문자와 대문자, 괄호의 의미가 있어서 추후에 유지하는 지에 대한 의문
-                result.Add(Regex.Replace(data[i], @"[()23=#\[\]]", string.Empty).ToUpper());
+                string formula = Regex.Replace(data[i], @"[()23\[\]]", string.Empty).ToUpper()
+                    .Replace('=', 'D')
+                    .Replace('#', 'T')
+                    ;
+
+                result.Add(formula);
             }
 
             return result;

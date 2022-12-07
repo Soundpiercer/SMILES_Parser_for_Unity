@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.SceneManagement;
+using System.Text.RegularExpressions;
 
 public class FormulaButtonBehaviour : MonoBehaviour
 {
@@ -16,7 +17,10 @@ public class FormulaButtonBehaviour : MonoBehaviour
         this.window = window;
 
         this.formula = formula;
-        formulaText.text = formula;
+		
+        string filtered = Regex.Replace(formula, @"[D]", "=").ToUpper();
+        filtered = Regex.Replace(filtered, @"[T]", "#").ToUpper();
+        formulaText.text = filtered;
     }
 
     public void Show()

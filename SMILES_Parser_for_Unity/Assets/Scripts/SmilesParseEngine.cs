@@ -12,11 +12,14 @@ public class SmilesParseEngine : MonoBehaviour
 {
     public GameObject smilesObjectPrefab;
     public GameObject smilesEdgePrefab;
+    public GameObject smilesDoubleEdgePrefab;
+    public GameObject smilesTripleEdgePrefab;
     public Transform smilesObjectRoot;
 
     public string formula = string.Empty;
     private Graph<Atom> Graph = new Graph<Atom>();
-
+    int[] doub = new int[1000000];
+    int[] trip = new int[1000000];
     public void Init()
     {
         Parse();
@@ -71,13 +74,45 @@ public class SmilesParseEngine : MonoBehaviour
         */
 
         string molecules = Regex.Replace(formula, @"[\d-]", string.Empty);
-        // Debug.Log(molecules);
+        
+        for (int i = 0; i < molecules.Length; i++)
+        {
+            doub[i] = 0;
+            trip[i] = 0;
+        }
+
+
+        //molecules = Regex.Replace(molecules, @"D", string.Empty);
+        //string result = Regex.Match(input, pattern).Value;
+        //위치 저장하면서 하나씩 없애기
+        string pattern = @"D";
+        Regex rgx = new Regex(pattern);
+        Match match = rgx.Match(molecules);
+        if (match.Success)
+        {
+            doub[match.Index] = 1;
+            foreach (Match m in rgx.Matches(molecules, match.Index + match.Length))
+                doub[match.Index] = 1;
+        }
+
+        string pattern2 = @"T";
+        Regex rgx2 = new Regex(pattern2);
+        Match match2 = rgx2.Match(molecules);
+        if (match2.Success)
+        {
+            trip[match2.Index] = 1;
+            foreach (Match m2 in rgx2.Matches(molecules, match2.Index + match2.Length))
+                trip[match2.Index] = 1;
+        }
 
 
         // ★ Step 2. Build Graph
         for (int i = 0; i < molecules.Length; i++)
         {
-            Graph.AddNode(new Atom(molecules[i], i));
+            //if (molecules[i] != 'D')
+            {
+                Graph.AddNode(new Atom(molecules[i], i));
+            }
         }
 
         for (int i = 0; i < Graph.NodesCount; i++)
@@ -169,6 +204,7 @@ public class SmilesParseEngine : MonoBehaviour
         while (stack.Count > 0)
         {
             Node<Atom> node = stack.Pop();
+            //if (node.Data!=D
             for (int i = 0; i < node.Neighbors.Count; i++)
             {
                 var neighbor = node.Neighbors[i];
@@ -227,21 +263,62 @@ public class SmilesParseEngine : MonoBehaviour
     {
         foreach (AtomBehaviour atom in atoms)
         {
-            Node<Atom> atomNode = graph.GetNode(atom.ID);
-            if (atomNode.Neighbors.Count > 0)
+
+            if (doub[atom.ID] == 1)//)////////////////////////////////////////////////////////////2중 3중 위치 빈칸 => 2중 3중 
             {
-                AtomBehaviour from = atoms.Find(a => a.ID == atomNode.Data.id);
-
-                List<Node<Atom>> neighbors = atomNode.Neighbors;
-                foreach (Node<Atom> node in neighbors)
+                Node<Atom> atomNode = graph.GetNode(atom.ID);
+                if (atomNode.Neighbors.Count > 0)
                 {
-                    AtomBehaviour to = atoms.Find(a => a.ID == node.Data.id);
+                    AtomBehaviour from = atoms.Find(a => a.ID == atomNode.Data.id);
 
-                    EdgeBehaviour edgeObject = Instantiate(smilesEdgePrefab, smilesObjectRoot)
-                        .AddComponent<EdgeBehaviour>();
-                    edgeObject.Init(from, to);
+                    List<Node<Atom>> neighbors = atomNode.Neighbors;
+                    foreach (Node<Atom> node in neighbors)
+                    {
+                        AtomBehaviour to = atoms.Find(a => a.ID == node.Data.id);
+
+                        EdgeBehaviour edgeObject = Instantiate(smilesDoubleEdgePrefab, smilesObjectRoot)
+                            .AddComponent<EdgeBehaviour>();
+                        edgeObject.Init(from, to);
+                    }
                 }
             }
+            if (trip[atom.ID] == 1)//)////////////////////////////////////////////////////////////2중 3중 위치 빈칸 => 2중 3중 
+            {
+                Node<Atom> atomNode = graph.GetNode(atom.ID);
+                if (atomNode.Neighbors.Count > 0)
+                {
+                    AtomBehaviour from = atoms.Find(a => a.ID == atomNode.Data.id);
+
+                    List<Node<Atom>> neighbors = atomNode.Neighbors;
+                    foreach (Node<Atom> node in neighbors)
+                    {
+                        AtomBehaviour to = atoms.Find(a => a.ID == node.Data.id);
+
+                        EdgeBehaviour edgeObject = Instantiate(smilesTripleEdgePrefab, smilesObjectRoot)
+                            .AddComponent<EdgeBehaviour>();
+                        edgeObject.Init(from, to);
+                    }
+                }
+            }
+            else//atom.ID != 2)////////////////////////////////////////////////////////////2중 3중 위치 빈칸 => 2중 3중 
+            {
+                Node<Atom> atomNode = graph.GetNode(atom.ID);
+                if (atomNode.Neighbors.Count > 0)
+                {
+                    AtomBehaviour from = atoms.Find(a => a.ID == atomNode.Data.id);
+
+                    List<Node<Atom>> neighbors = atomNode.Neighbors;
+                    foreach (Node<Atom> node in neighbors)
+                    {
+                        AtomBehaviour to = atoms.Find(a => a.ID == node.Data.id);
+
+                        EdgeBehaviour edgeObject = Instantiate(smilesEdgePrefab, smilesObjectRoot)
+                            .AddComponent<EdgeBehaviour>();
+                        edgeObject.Init(from, to);
+                    }
+                }
+            }
+
         }
     }
     #endregion
