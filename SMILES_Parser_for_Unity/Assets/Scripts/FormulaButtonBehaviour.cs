@@ -3,21 +3,28 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.SceneManagement;
+using System.Text.RegularExpressions;
 
 public class FormulaButtonBehaviour : MonoBehaviour
 {
-    public string formula;
     public Text formulaText;
 
-    public void Init(string formula)
+    private IWindow window;
+    private string formula;
+
+    public void Init(string formula, IWindow window)
     {
+        this.window = window;
+
         this.formula = formula;
-        formulaText.text = formula;
+		
+        string filtered = Regex.Replace(formula, @"[D]", "=").ToUpper();
+        filtered = Regex.Replace(filtered, @"[T]", "#").ToUpper();
+        formulaText.text = filtered;
     }
 
     public void Show()
     {
-        SmilesParseEngine.formula = formula;
-        SceneManager.LoadScene(1);
+        window.OpenViewer(formula);
     }
 }

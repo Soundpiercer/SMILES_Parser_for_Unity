@@ -29,6 +29,9 @@ public class AtomBehaviour : MonoBehaviour
             case Element.N:
                 renderer.material.color = Color.green;
                 break;
+            case Element.D:
+                renderer.material.color = Color.red;
+                break;
             default:
                 break;
         }

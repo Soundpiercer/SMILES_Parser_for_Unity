@@ -147,7 +147,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 23978805e9005470590f65a750b6a93d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  formula: 
   formulaText: {fileID: 259533897276714777}
 --- !u!1 &2571020886366780443
 GameObject:
@@ -216,7 +215,7 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls: []
   m_FontData:
-    m_Font: {fileID: 10102, guid: 0000000000000000e000000000000000, type: 0}
+    m_Font: {fileID: 12800000, guid: e55f4ca95e591d7459569fef2f10b3af, type: 3}
     m_FontSize: 28
     m_FontStyle: 0
     m_BestFit: 0
